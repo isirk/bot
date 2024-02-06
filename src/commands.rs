@@ -39,3 +39,26 @@ pub async fn hello(ctx: Context<'_>) -> Result<(), Error> {
     ctx.say("Hello, World!").await?;
     Ok(())
 }
+
+/// Paginate through some content
+#[poise::command(slash_command, prefix_command)]
+pub async fn paginate(ctx: Context<'_>) -> Result<(), Error> {
+    let pages = &[
+        "Content of first page",
+        "Content of second page",
+        "Content of third page",
+        "Content of fourth page",
+    ];
+
+    poise::samples::paginate(ctx, pages).await?;
+
+    Ok(())
+}
+
+/// Shuts down the bot
+#[poise::command(prefix_command, owners_only, hide_in_help)]
+pub async fn shutdown(ctx: Context<'_>) -> Result<(), Error> {
+    ctx.say("Shutting down...").await?;
+    ctx.framework().shard_manager().shutdown_all().await;
+    Ok(())
+}

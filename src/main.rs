@@ -1,6 +1,6 @@
 mod commands;
-
 use poise::serenity_prelude as serenity;
+use std::fs;
 
 struct Data {} // User data, which is stored and accessible in all command invocations
 type Error = Box<dyn std::error::Error + Send + Sync>;
@@ -8,8 +8,9 @@ type Context<'a> = poise::Context<'a, Data, Error>;
 
 #[tokio::main]
 async fn main() {
-    let token = std::env::var("DISCORD_TOKEN").expect("missing DISCORD_TOKEN");
-    let intents = serenity::GatewayIntents::non_privileged() | serenity::GatewayIntents::MESSAGE_CONTENT;
+    let token = fs::read_to_string("token.txt").expect("failed to read token from file");
+    let intents =
+        serenity::GatewayIntents::non_privileged() | serenity::GatewayIntents::MESSAGE_CONTENT;
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
@@ -17,6 +18,8 @@ async fn main() {
                 commands::age(),
                 commands::hello(),
                 commands::help(),
+                commands::paginate(),
+                commands::shutdown(),
             ],
             event_handler: |ctx, event, framework, data| {
                 Box::pin(event_handler(ctx, event, framework, data))
@@ -34,7 +37,6 @@ async fn main() {
             })
         })
         .build();
-
     let client = serenity::ClientBuilder::new(token, intents)
         .framework(framework)
         .await;
