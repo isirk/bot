@@ -1,5 +1,16 @@
 use crate::{Context, Error};
+use chrono::Utc;
 use poise::serenity_prelude as serenity;
+
+pub struct Todo {
+    name: String,
+    completed: bool,
+    created: chrono::DateTime<chrono::Utc>,
+    due: Option<chrono::DateTime<chrono::Utc>>,
+    author: serenity::UserId,
+}
+
+let mut todos: Vec<Todo> = Vec::new();
 
 /// Show this help menu
 #[poise::command(slash_command, prefix_command, track_edits)]
@@ -21,22 +32,41 @@ pub async fn help(
     Ok(())
 }
 
-/// Displays your or another user's account creation date
-#[poise::command(slash_command, prefix_command)]
-pub async fn age(
-    ctx: Context<'_>,
-    #[description = "Selected user"] user: Option<serenity::User>,
-) -> Result<(), Error> {
-    let u = user.as_ref().unwrap_or_else(|| ctx.author());
-    let response = format!("{}'s account was created at {}", u.name, u.created_at());
-    ctx.say(response).await?;
+#[poise::command(
+    prefix_command,
+    slash_command,
+    subcommands("add", "remove", "list", "complete")
+)]
+pub async fn todo(ctx: Context<'_>) -> Result<(), Error> {
+    ctx.say("Hello there!").await?;
     Ok(())
 }
 
-/// Says Hello World
-#[poise::command(slash_command, prefix_command)]
-pub async fn hello(ctx: Context<'_>) -> Result<(), Error> {
-    ctx.say("Hello, World!").await?;
+/// Add a new todo
+#[poise::command(prefix_command, slash_command)]
+pub async fn add(ctx: Context<'_>) -> Result<(), Error> {
+    ctx.say("You invoked the first child command!").await?;
+    Ok(())
+}
+
+/// Remove a todo
+#[poise::command(prefix_command, slash_command)]
+pub async fn remove(ctx: Context<'_>) -> Result<(), Error> {
+    ctx.say("You invoked the second child command!").await?;
+    Ok(())
+}
+
+/// List all todos
+#[poise::command(prefix_command, slash_command)]
+pub async fn list(ctx: Context<'_>) -> Result<(), Error> {
+    ctx.say("You invoked the third child command!").await?;
+    Ok(())
+}
+
+/// Mark a todo as complete
+#[poise::command(prefix_command, slash_command)]
+pub async fn complete(ctx: Context<'_>) -> Result<(), Error> {
+    ctx.say("You invoked the fourth child command!").await?;
     Ok(())
 }
 

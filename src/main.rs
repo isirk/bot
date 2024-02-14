@@ -15,8 +15,11 @@ async fn main() {
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
             commands: vec![
-                commands::age(),
-                commands::hello(),
+                commands::todo(),
+                commands::add(),
+                commands::remove(),
+                commands::list(),
+                commands::complete(),
                 commands::help(),
                 commands::paginate(),
                 commands::shutdown(),
